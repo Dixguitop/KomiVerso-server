@@ -1,0 +1,118 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider               = "prisma-client"
+  output                 = "../generated/prisma"
+  generatedFileExtension = "ts"
+  importFileExtension    = "ts"
+}
+
+model Usuario {
+  id           String    @id @default(uuid())
+  correo       String    @unique
+  username     String?
+  passHash     String?
+  avatar       String?
+  bio          String    @default("")
+  verificado   Boolean   @default(false)
+  codigoVerif  String?
+  codigoExpira DateTime?
+  creadoEn     DateTime  @default(now())
+  xp           Int       @default(0)
+  level        Int       @default(1)
+  titles       String[]  @default([])
+  activeTitle  String?
+
+  plan          String    @default("free")
+  planStatus    String?
+  planRenewsAt  DateTime?
+  verotelSaleID String?   @unique
+
+  listas          ListaManga[]
+  comentarios     Comentario[]
+  capitulosLeidos CapituloLeido[]
+}
+
+model ListaManga {
+  id             String   @id @default(uuid())
+  usuarioId      String
+  mangaId        String
+  titulo         String
+  cover          String?
+  estado         String   @default("leyendo")
+  favorito       Boolean  @default(false)
+  capituloActual Int      @default(0)
+  actualizadoEn  DateTime @updatedAt
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId, mangaId])
+  @@index([usuarioId])
+}
+
+model CapituloLeido {
+  id        String   @id @default(uuid())
+  usuarioId String
+  mangaId   String
+  chapterId String
+  leidoEn   DateTime @default(now())
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId, chapterId])
+  @@index([usuarioId, mangaId])
+}
+
+model Comentario {
+  id        String   @id @default(uuid())
+  usuarioId String
+  mangaId   String
+  chapterId String?
+  texto     String
+  spoiler   Boolean  @default(false)
+  creadoEn  DateTime @default(now())
+
+  parentId String?
+  parent   Comentario?  @relation("Respuestas", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comentario[] @relation("Respuestas")
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([mangaId])
+  @@index([mangaId, chapterId])
+  @@index([parentId])
+}
+
+model Manhwa {
+  id          String   @id
+  remoteId    String?
+  nombre      String   @default("")
+  nameKey     String?
+  imagen      String?
+  capitulo    Float    @default(0)
+  sinopsis    String?  @db.Text
+  tipo        String?
+  demografia  String?
+  plataforma  String?
+  erotico     String?
+  estado      String?
+  autor       String?
+  artista     String?
+  anio        Int?
+  popularidad Float    @default(0)
+  hiatus      Boolean  @default(false)
+  categorias  Json?
+  autores     Json?
+  capitulos   Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([remoteId])
+  @@index([nameKey])
+  @@index([tipo])
+  @@index([estado])
+  @@index([popularidad])
+  @@index([updatedAt])
+}
