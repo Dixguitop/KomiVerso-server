@@ -883,7 +883,7 @@ router.get("/:id", async (req, res) => {
     res.status(502).json({
 
       error:
-        "No se pudo cargar el manhwa desde ManhwaWeb",
+        "No se pudo cargar el manhwa",
 
       detail:
         err.message
