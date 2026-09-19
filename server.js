@@ -8,6 +8,7 @@ import listsRouter from "./src/routes/lists.js";
 import manhwaRouter from "./src/routes/manhwa.js";
 import progresoRouter from "./src/routes/progreso.js";
 import subscriptionRouter from "./src/routes/subscription.js";
+import appVersionRouter from "./src/routes/appVersion.js";
 import cron from "node-cron";
 import { runScraper } from "./src/scraper/index.js";
 
@@ -24,6 +25,7 @@ app.use("/api/listas", listsRouter);
 app.use("/api/manhwa", manhwaRouter);
 app.use("/api/progreso", progresoRouter);
 app.use("/api/suscripcion", subscriptionRouter);
+app.use("/api/app", appVersionRouter);
 
 app.get("/", (req, res) => res.json({
   ok: true,
