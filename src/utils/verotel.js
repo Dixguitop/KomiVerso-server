@@ -59,7 +59,7 @@ export function crearCheckoutFanURL({ usuarioId, correo }) {
   const params = {
     version,
     shopID,
-    priceAmount: "8.50",
+    priceAmount: "3.50",
     priceCurrency: "USD",
     description: "KomiVerso Fan",
     subscriptionType: "recurring",
